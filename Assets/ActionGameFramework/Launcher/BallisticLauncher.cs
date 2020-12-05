@@ -40,24 +40,8 @@ namespace Assets.ActionGameFramework.Launcher
 				DestroyImmediate(projectile);
 				return;
 			}
-			Vector3 targetPoint;
-			if (ballisticProjectile.fireMode == BallisticFireMode.UseLaunchSpeed)
-			{
-				// use speed
-				targetPoint = BallisticHelper.CalculateBallisticLeadingTargetPointWithSpeed(
-					startPosition,
-					enemy.transform.position, Vector3.one,
-					ballisticProjectile.startSpeed, ballisticProjectile.arcPreference, Physics.gravity.y, 4);
-			}
-			else
-			{
-				// use angle
-				targetPoint = BallisticHelper.CalculateBallisticLeadingTargetPointWithAngle(
-					startPosition,
-					enemy.transform.position, Vector3.one, ballisticProjectile.firingAngle,
-					ballisticProjectile.arcPreference, Physics.gravity.y, 4);
-			}
-			ballisticProjectile.FireAtPoint(startPosition, targetPoint);
+			Vector3 targetPoint = Vector3.zero;
+			 
 			PlayParticles(fireParticleSystem, startPosition, targetPoint);
 		}
 	}

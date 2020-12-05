@@ -65,6 +65,26 @@ namespace Assets.KinematiEquations
 
             return result;
         }
+        Vector3 CalculateSpeedToReachHeight(Vector3 origin, Vector3 target,float time, float maxHeight)
+        {
+            Vector3 dir = target - origin;
+            Vector3 dirxz = dir;
+            dirxz.y = 0f;
+
+            float sY = dir.y;
+            float sXz = dirxz.magnitude;
+
+            float Vxz = sXz / time;
+            float Vy = (sY / time) + (.5f * gravity * time);
+            // maxHeight = V0 / 2g 
+
+
+            Vector3 result = dirxz.normalized;
+            result *= Vxz;
+            result.y = Vy;
+
+            return result;
+        }
         Vector3 CalculatePositionInTime(Vector3 vo, float t)
         {
             Vector3 Vxz = vo;
