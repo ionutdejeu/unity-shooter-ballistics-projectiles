@@ -8,21 +8,29 @@ public class SpiralMovement : MonoBehaviour
     public Transform target;
     public LineRenderer visual;
     public int lineSegmentCount = 10;
+    public int intialAngle = 30;
 
 
     float flightTime = 5f;
     Vector3 speed;
 
-    private float RotateSpeed = 5f;
-    private float Radius = 0.1f;
+    Quaternion rotationAtSpeed;
+    
+    public float StartingRadius = 10f;
+    public float EndRadius = 0f;
+    Vector3 movementDirection;
+    Quaternion movementDirectionRotation;
 
     private void Start()
     {
-        visual.positionCount = lineSegmentCount + 1;
-        speed = CalculateVelocity(target.position, start.position, flightTime);
+        movementDirection = (target.position - start.position);
+        movementDirectionRotation = Quaternion.LookRotation(movementDirection);
+        
+        visual.positionCount = lineSegmentCount+1;
     }
     private void Update()
     {
+        rotationAtSpeed = Quaternion.AngleAxis(intialAngle, movementDirection);
         Visualize(speed, target.position);
          
 
@@ -32,24 +40,26 @@ public class SpiralMovement : MonoBehaviour
     //added final position argument to draw the last line node to the actual target
     void Visualize(Vector3 speed, Vector3 targetPos)
     {
-        for (int i = 0; i < lineSegmentCount; i++)
+        for (int i = 0; i <=lineSegmentCount; i++)
         {
-            Vector3 pos = CalculatePositionInTime(speed, (i / (float)lineSegmentCount) * flightTime);
-            visual.SetPosition(i, pos);
+            float t = (i / (float)lineSegmentCount);
+            Vector3 pos = Vector3.Lerp(start.position, target.position, t);
+            float radLert = StartingRadius-(StartingRadius-EndRadius) * t;
+            Vector3 rPovit = rotationAtSpeed * Vector3.Cross(movementDirection, Vector3.up).normalized*radLert;
+            Vector3 finalPos = pos + rPovit;
+            rotationAtSpeed *= Quaternion.AngleAxis(15,movementDirection);
+
+            Debug.DrawLine(pos, finalPos, Color.red);
+            visual.SetPosition(i, pos+rPovit);
         }
 
-        visual.SetPosition(lineSegmentCount, targetPos);
+        //visual.SetPosition(lineSegmentCount, targetPos);
     }
-    Vector3 CalculateVelocity(Vector3 target, Vector3 origin, float time)
-    {
-        Vector3 dir = target - origin;
-        
-        return dir;
-    }
-    Vector3 CalculatePositionInTime(Vector3 speed,float t)
-    {
-        //var offset = new Vector2(Mathf.Sin(_angle), Mathf.Cos(_angle)) * Radius;
-        return new Vector3(Mathf.Sin(t), -Mathf.Sin(t), 0)+speed;
 
+    public Vector3 RotatePointAroundPivotWithRadius(Vector3 dir, Vector3 position, Quaternion rot)
+    {
+        return position + (rot * dir); 
     }
+
+ 
 }

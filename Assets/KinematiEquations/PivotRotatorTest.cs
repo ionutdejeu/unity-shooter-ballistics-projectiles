@@ -27,4 +27,9 @@ public class PivotRotatorTest : MonoBehaviour
     {
         return _pivotPosition + (_finalRotation * (_finalPosition - _pivotPosition)); // returns new position of the point;
     }
+
+    public Vector3 RotatePointAroundPivotWithRadius(Vector3 dir, Vector3 position, Quaternion rot)
+    {
+        return position + (rot * dir);
+    }
 }
